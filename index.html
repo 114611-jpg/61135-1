@@ -2,50 +2,40 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>太空射擊 Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>射擊遊戲</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
-
-        :root {
-            --primary-glow: #ff2d55; /* Changed to red */
-            --secondary-glow: #ff00c1;
-            --background-dark: #0d0d2b;
-            --background-light: #1a1a3e;
-            --text-color: #f0f0f0;
-            --accent-color: #ff8f9c; /* Changed to light red */
-        }
-
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background: var(--background-dark);
-            color: var(--text-color);
-            font-family: 'Orbitron', '微軟正黑體', sans-serif;
+            background-color: #1a1a2e;
+            color: #fff;
+            font-family: '微軟正黑體', 'Microsoft JhengHei', Arial, sans-serif;
             overflow: hidden;
             flex-direction: column;
-            text-align: center;
         }
 
         #game-container {
             position: relative;
-            width: 95vmin;
-            height: 80vmin;
-            max-width: 900px;
-            max-height: 700px;
-            border: 3px solid var(--primary-glow);
-            background-color: var(--background-light);
-            box-shadow: 0 0 25px var(--primary-glow), inset 0 0 15px rgba(255, 45, 85, 0.3);
+            width: 90vmin;
+            height: 70vmin;
+            max-width: 800px;
+            max-height: 600px;
+            border: 2px solid #00c9a7;
+            background-color: #0f0f2b;
+            box-shadow: 0 0 20px #00c9a7;
             overflow: hidden;
-            border-radius: 20px;
-            cursor: crosshair;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
         }
 
         canvas {
-            display: block;
+            background-color: transparent;
             width: 100%;
             height: 100%;
         }
@@ -56,126 +46,71 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(13, 13, 43, 0.85);
-            backdrop-filter: blur(5px);
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
             z-index: 10;
-            border-radius: 18px;
-            transition: opacity 0.5s ease;
-        }
-
-        #ui-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
+            border-radius: 15px;
         }
 
         #ui-overlay h1 {
-            font-size: clamp(2.5em, 8vmin, 5em);
-            color: var(--primary-glow);
-            text-shadow: 0 0 10px var(--primary-glow), 0 0 20px var(--primary-glow);
-            margin-bottom: 0.2em;
+            font-size: 3em;
+            color: #ff9b71;
+            text-shadow: 2px 2px 5px #c9184a;
         }
         
         #ui-overlay h2 {
-            font-size: clamp(1.5em, 5vmin, 2.5em);
-            color: var(--accent-color);
-            text-shadow: 0 0 8px var(--accent-color);
-            margin-top: 0;
+            font-size: 2em;
+            color: #ff9b71;
+            text-shadow: 2px 2px 5px #c9184a;
         }
 
-        #instructions {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 45, 85, 0.5);
-            max-width: 85%;
-            line-height: 1.6;
-        }
-
-        #instructions h3 {
-            margin-top: 0;
-            margin-bottom: 10px;
-            color: var(--primary-glow);
-            text-shadow: 0 0 5px var(--primary-glow);
-            font-size: clamp(1.1em, 3.5vmin, 1.5em);
-            padding-bottom: 5px;
-            border-bottom: 1px solid rgba(255, 45, 85, 0.3);
-        }
-
-        #instructions p {
-            margin: 8px 0;
-            font-size: clamp(0.8em, 2.8vmin, 1.1em);
-            font-family: '微軟正黑體', sans-serif;
-            letter-spacing: 1px;
-        }
-
-        #instructions p strong {
-            color: var(--accent-color);
-        }
-
-        .action-button {
-            padding: 15px 35px;
-            font-size: clamp(1.2em, 4vmin, 1.8em);
+        #start-button, #restart-button {
+            padding: 15px 30px;
+            font-size: 1.5em;
             font-weight: bold;
-            color: var(--background-dark);
-            background: linear-gradient(45deg, var(--primary-glow), #ff5c7a);
+            color: #fff;
+            background-color: #0077b6;
             border: none;
-            border-radius: 12px;
+            border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 0 15px var(--primary-glow), 0 5px 25px rgba(255, 45, 85, 0.4);
-            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-            margin-top: 25px;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 2px;
+            box-shadow: 0 5px 15px rgba(0, 119, 182, 0.5);
+            transition: transform 0.2s, background-color 0.2s;
+            margin-top: 20px;
         }
 
-        .action-button:hover {
-            transform: scale(1.1) rotate(-2deg);
-            box-shadow: 0 0 25px var(--primary-glow), 0 8px 35px rgba(255, 45, 85, 0.6);
+        #start-button:hover, #restart-button:hover {
+            background-color: #0096c7;
+            transform: scale(1.05);
         }
-        
-        #hud {
-             position: absolute;
-             top: 15px;
-             left: 15px;
-             right: 15px;
-             display: flex;
-             justify-content: space-between;
-             align-items: center;
-             font-size: clamp(1em, 3.5vmin, 1.8em);
-             font-weight: bold;
-             pointer-events: none;
-             text-shadow: 0 0 5px var(--primary-glow);
+
+        #score-display {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            z-index: 5;
         }
     </style>
 </head>
 <body>
     <div id="game-container">
         <canvas id="gameCanvas"></canvas>
-        <div id="hud">
-            <div id="score-display">分數: 0</div>
-        </div>
-        <div id="ui-overlay">
-            <h1 id="overlay-title">太空射擊 Pro</h1>
+        <div id="score-display">分數: 0</div>
+        <div id="ui-overlay" class="hidden">
+            <h1 id="overlay-title">射擊遊戲</h1>
             <h2 id="final-score"></h2>
-            <div id="instructions">
-                <h3>遊戲玩法</h3>
-                <p><strong>鍵盤移動:</strong> 使用 W/A/S/D 或方向鍵。</p>
-                <p><strong>滑鼠射擊:</strong> 點擊螢幕任意位置朝該方向射擊。</p>
-                <p><strong>鍵盤射擊:</strong> 按下 <strong>空白鍵</strong> 向上方射擊。</p>
-                <p>消滅所有來襲的敵人，別讓它們碰到你！</p>
-            </div>
-            <button id="start-button" class="action-button">開始遊戲</button>
+            <button id="start-button">開始遊戲</button>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- DOM Elements ---
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
             const uiOverlay = document.getElementById('ui-overlay');
@@ -183,350 +118,237 @@
             const finalScoreDisplay = document.getElementById('final-score');
             const startButton = document.getElementById('start-button');
             const scoreDisplay = document.getElementById('score-display');
-            const instructions = document.getElementById('instructions');
 
-            // --- Game State & Variables ---
             let animationFrameId;
+            let gameRunning = false;
             let score = 0;
-            let player;
-            let projectiles = [];
-            let enemies = [];
-            let particles = [];
-            let gameFrame = 0;
-            let enemySpawnInterval = 100;
-            const keys = {}; // Moved here to be globally accessible in the script
+            let lastEnemyTime = 0;
+            let enemySpawnInterval = 1000;
+            let stars = [];
 
-            // --- Canvas Sizing ---
+            const player = {
+                x: 0,
+                y: 0,
+                radius: 15,
+                color: '#80ed99',
+                speed: 5
+            };
+
+            const bullets = [];
+            const enemies = [];
+            const keys = {};
+
+            // Adjust canvas size on window resize
             function resizeCanvas() {
                 const container = document.getElementById('game-container');
                 canvas.width = container.clientWidth;
                 canvas.height = container.clientHeight;
+                
+                player.x = canvas.width / 2;
+                player.y = canvas.height - player.radius - 20;
             }
             window.addEventListener('resize', resizeCanvas);
             resizeCanvas();
 
-            // --- Utility Functions ---
-            const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1);
-
-            // --- Player Class ---
-            class Player {
-                constructor() {
-                    this.x = canvas.width / 2;
-                    this.y = canvas.height - 50;
-                    this.radius = 15;
-                    this.color = '#f0f0f0'; // Changed to white for better contrast
-                    this.speed = 7; // Adjusted speed for direct movement
-                }
-
-                draw() {
-                    ctx.save();
-                    ctx.translate(this.x, this.y);
-                    ctx.beginPath();
-                    // Draw player triangle
-                    ctx.moveTo(0, -this.radius);
-                    ctx.lineTo(-this.radius * 0.8, this.radius * 0.8);
-                    ctx.lineTo(this.radius * 0.8, this.radius * 0.8);
-                    ctx.closePath();
-                    
-                    ctx.shadowColor = this.color;
-                    ctx.shadowBlur = 15;
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                    ctx.restore();
-                }
-                
-                update() {
-                    // Direct movement based on key states
-                    if (keys['w'] || keys['arrowup']) this.y -= this.speed;
-                    if (keys['s'] || keys['arrowdown']) this.y += this.speed;
-                    if (keys['a'] || keys['arrowleft']) this.x -= this.speed;
-                    if (keys['d'] || keys['arrowright']) this.x += this.speed;
-
-                    // Boundary checks
-                    if (this.x - this.radius < 0) this.x = this.radius;
-                    if (this.x + this.radius > canvas.width) this.x = canvas.width - this.radius;
-                    if (this.y - this.radius < 0) this.y = this.radius;
-                    if (this.y + this.radius > canvas.height) this.y = canvas.height - this.radius;
-
-                    this.draw();
-                }
-
-                shoot(targetX, targetY) {
-                    const angle = Math.atan2(targetY - this.y, targetX - this.x);
-                    const velocity = {
-                        x: Math.cos(angle) * 8,
-                        y: Math.sin(angle) * 8
-                    };
-                    projectiles.push(new Projectile(this.x, this.y, 5, '#ff2d55', velocity)); // Changed bullet color
-                }
-            }
-
-            // --- Projectile Class ---
-            class Projectile {
-                constructor(x, y, radius, color, velocity) {
-                    this.x = x;
-                    this.y = y;
-                    this.radius = radius;
-                    this.color = color;
-                    this.velocity = velocity;
-                }
-
-                draw() {
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-                    ctx.shadowColor = this.color;
-                    ctx.shadowBlur = 10;
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                }
-                
-                update() {
-                    this.x += this.velocity.x;
-                    this.y += this.velocity.y;
-                    this.draw();
-                }
-            }
-
-            // --- Enemy Class ---
-            class Enemy {
-                constructor(x, y, radius, color, velocity) {
-                    this.x = x;
-                    this.y = y;
-                    this.radius = radius;
-                    this.color = color;
-                    this.velocity = velocity;
-                    this.sides = Math.floor(Math.random() * 5) + 3; // 3 to 7 sides
-                }
-                
-                draw() {
-                    ctx.save();
-                    ctx.translate(this.x, this.y);
-                    ctx.rotate(gameFrame * 0.01); // Spin effect
-                    ctx.beginPath();
-                    ctx.moveTo(this.radius, 0);
-                    for (let i = 1; i <= this.sides; i++) {
-                        const angle = i * 2 * Math.PI / this.sides;
-                        ctx.lineTo(this.radius * Math.cos(angle), this.radius * Math.sin(angle));
-                    }
-                    ctx.closePath();
-                    ctx.shadowColor = this.color;
-                    ctx.shadowBlur = 20;
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                    ctx.restore();
-                }
-                
-                update() {
-                    this.x += this.velocity.x;
-                    this.y += this.velocity.y;
-                    this.draw();
-                }
-            }
-            
-            // --- Particle Class ---
-            class Particle {
-                constructor(x, y, radius, color, velocity) {
-                    this.x = x;
-                    this.y = y;
-                    this.radius = radius;
-                    this.color = color;
-                    this.velocity = velocity;
-                    this.alpha = 1;
-                }
-
-                draw() {
-                    ctx.save();
-                    ctx.globalAlpha = this.alpha;
-                    ctx.beginPath();
-                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-                    ctx.shadowColor = this.color;
-                    ctx.shadowBlur = 5;
-                    ctx.fillStyle = this.color;
-                    ctx.fill();
-                    ctx.restore();
-                }
-
-                update() {
-                    this.x += this.velocity.x;
-                    this.y += this.velocity.y;
-                    this.alpha -= 0.02; // Fade out
-                    this.draw();
-                }
-            }
-
-            // --- Enemy Spawning ---
-            function spawnEnemies() {
-                if (gameFrame % enemySpawnInterval === 0) {
-                    const radius = Math.random() * 20 + 10; // size 10 to 30
-                    const x = Math.random() < 0.5 ? 0 - radius : canvas.width + radius;
-                    const y = Math.random() * canvas.height;
-                    
-                    const angle = Math.atan2(player.y - y, player.x - x);
-                    const speed = 2 + (score / 500); // Speed increases with score
-                    const velocity = {
-                        x: Math.cos(angle) * speed,
-                        y: Math.sin(angle) * speed
-                    };
-
-                    const color = `hsl(${Math.random() * 360}, 80%, 60%)`;
-                    
-                    enemies.push(new Enemy(x, y, radius, color, velocity));
-                    
-                    // Difficulty scaling
-                    if (enemySpawnInterval > 30) {
-                        enemySpawnInterval = Math.max(30, 100 - Math.floor(score / 100));
-                    }
-                }
-            }
-
-            // --- Game Initialization ---
-            function init() {
-                player = new Player();
-                projectiles = [];
-                enemies = [];
-                particles = [];
-                score = 0;
-                gameFrame = 0;
-                enemySpawnInterval = 100;
-                scoreDisplay.innerText = `分數: 0`;
-                instructions.style.display = 'block';
-            }
-            
-            // --- Animation Loop ---
-            function animate() {
-                animationFrameId = requestAnimationFrame(animate);
-                gameFrame++;
-                
-                // Motion blur effect
-                ctx.fillStyle = 'rgba(13, 13, 43, 0.2)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                player.update();
-                spawnEnemies();
-
-                // Update particles
-                particles.forEach((particle, index) => {
-                    if (particle.alpha <= 0) {
-                        particles.splice(index, 1);
-                    } else {
-                        particle.update();
-                    }
-                });
-
-                // Update projectiles
-                projectiles.forEach((projectile, pIndex) => {
-                    projectile.update();
-                    if (projectile.x + projectile.radius < 0 ||
-                        projectile.x - projectile.radius > canvas.width ||
-                        projectile.y + projectile.radius < 0 ||
-                        projectile.y - projectile.radius > canvas.height) {
-                        setTimeout(() => projectiles.splice(pIndex, 1), 0);
-                    }
-                });
-
-                // Update enemies and check collisions
-                enemies.forEach((enemy, eIndex) => {
-                    enemy.update();
-
-                    // Player-enemy collision
-                    if (distance(player.x, player.y, enemy.x, enemy.y) - enemy.radius - player.radius < 1) {
-                        endGame();
-                    }
-
-                    // Projectile-enemy collision
-                    projectiles.forEach((projectile, pIndex) => {
-                        if (distance(projectile.x, projectile.y, enemy.x, enemy.y) - enemy.radius - projectile.radius < 1) {
-                            
-                            // Create explosion particles
-                            for (let i = 0; i < enemy.radius * 1.5; i++) {
-                                particles.push(new Particle(
-                                    projectile.x, projectile.y, Math.random() * 2 + 1, enemy.color,
-                                    { x: (Math.random() - 0.5) * (Math.random() * 8), y: (Math.random() - 0.5) * (Math.random() * 8) }
-                                ));
-                            }
-
-                            // Score update
-                            score += Math.floor(enemy.radius);
-                            scoreDisplay.innerText = `分數: ${score}`;
-                            
-                            // Remove enemy and projectile
-                            setTimeout(() => {
-                                enemies.splice(eIndex, 1);
-                                projectiles.splice(pIndex, 1);
-                            }, 0);
-                        }
+            // Initialize starfield
+            function initStars() {
+                stars = [];
+                for (let i = 0; i < 150; i++) {
+                    stars.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 1.5,
+                        speed: Math.random() * 0.5
                     });
+                }
+            }
+            initStars();
+
+            // Handle keyboard input
+            window.addEventListener('keydown', (e) => {
+                keys[e.key] = true;
+            });
+
+            window.addEventListener('keyup', (e) => {
+                keys[e.key] = false;
+                if (e.key === ' ' && gameRunning) {
+                    shootBullet();
+                }
+            });
+
+            // Player movement function
+            function updatePlayer() {
+                if (keys['ArrowLeft'] || keys['a']) {
+                    player.x = Math.max(player.radius, player.x - player.speed);
+                }
+                if (keys['ArrowRight'] || keys['d']) {
+                    player.x = Math.min(canvas.width - player.radius, player.x + player.speed);
+                }
+            }
+
+            // Bullet creation and movement
+            function shootBullet() {
+                const bullet = {
+                    x: player.x,
+                    y: player.y,
+                    radius: 3,
+                    color: '#ffbe0b',
+                    speed: 7
+                };
+                bullets.push(bullet);
+            }
+
+            function updateBullets() {
+                for (let i = bullets.length - 1; i >= 0; i--) {
+                    bullets[i].y -= bullets[i].speed;
+                    if (bullets[i].y < 0) {
+                        bullets.splice(i, 1);
+                    }
+                }
+            }
+
+            // Enemy creation and movement
+            function spawnEnemy() {
+                const enemy = {
+                    x: Math.random() * (canvas.width - 30) + 15,
+                    y: -30,
+                    radius: 15,
+                    color: '#c9184a',
+                    speed: 2 + Math.random() * 2
+                };
+                enemies.push(enemy);
+            }
+
+            function updateEnemies() {
+                for (let i = enemies.length - 1; i >= 0; i--) {
+                    enemies[i].y += enemies[i].speed;
+                    if (enemies[i].y - enemies[i].radius > canvas.height) {
+                        endGame();
+                        return;
+                    }
+                }
+            }
+
+            // Collision detection
+            function checkCollisions() {
+                for (let i = bullets.length - 1; i >= 0; i--) {
+                    for (let j = enemies.length - 1; j >= 0; j--) {
+                        const bullet = bullets[i];
+                        const enemy = enemies[j];
+                        
+                        // Distance formula for circle-circle collision
+                        const dx = bullet.x - enemy.x;
+                        const dy = bullet.y - enemy.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distance < bullet.radius + enemy.radius) {
+                            // Collision detected
+                            bullets.splice(i, 1);
+                            enemies.splice(j, 1);
+                            score += 10;
+                            updateScoreDisplay();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Draw game elements
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw stars
+                ctx.fillStyle = '#ffffff';
+                stars.forEach(star => {
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    star.y += star.speed;
+                    if (star.y > canvas.height) {
+                        star.y = 0;
+                        star.x = Math.random() * canvas.width;
+                    }
+                });
+
+                // Draw player
+                ctx.fillStyle = player.color;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Draw bullets
+                bullets.forEach(bullet => {
+                    ctx.fillStyle = bullet.color;
+                    ctx.beginPath();
+                    ctx.arc(bullet.x, bullet.y, bullet.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                // Draw enemies
+                enemies.forEach(enemy => {
+                    ctx.fillStyle = enemy.color;
+                    ctx.beginPath();
+                    ctx.arc(enemy.x, enemy.y, enemy.radius, 0, Math.PI * 2);
+                    ctx.fill();
                 });
             }
 
-            // --- Game Flow Control ---
-            function startGame() {
-                init();
-                animate();
-                uiOverlay.classList.add('hidden');
+            // Update score display
+            function updateScoreDisplay() {
+                scoreDisplay.innerText = `分數: ${score}`;
             }
 
+            // Main game loop
+            function gameLoop(timestamp) {
+                if (!gameRunning) return;
+
+                // Spawn new enemies based on a timer
+                if (timestamp - lastEnemyTime > enemySpawnInterval) {
+                    spawnEnemy();
+                    lastEnemyTime = timestamp;
+                }
+
+                updatePlayer();
+                updateBullets();
+                updateEnemies();
+                checkCollisions();
+                draw();
+
+                animationFrameId = requestAnimationFrame(gameLoop);
+            }
+
+            // End game function
             function endGame() {
+                gameRunning = false;
                 cancelAnimationFrame(animationFrameId);
                 overlayTitle.innerText = '遊戲結束';
-                finalScoreDisplay.innerText = `最終分數: ${score}`;
-                startButton.innerText = '重新挑戰';
-                instructions.style.display = 'none';
-                uiOverlay.classList.remove('hidden');
+                finalScoreDisplay.innerText = `您的分數是: ${score}`;
+                startButton.innerText = '重新開始';
+                uiOverlay.style.display = 'flex';
             }
-            
-            // --- Event Listeners ---
-            startButton.addEventListener('click', startGame);
 
-            // Controls
-            window.addEventListener('keydown', (e) => {
-                keys[e.key.toLowerCase()] = true;
-            });
-            window.addEventListener('keyup', (e) => {
-                const key = e.key.toLowerCase();
-                keys[key] = false;
+            // Start game function
+            function startGame() {
+                gameRunning = true;
+                score = 0;
+                bullets.length = 0;
+                enemies.length = 0;
+                updateScoreDisplay();
+                uiOverlay.style.display = 'none';
+                gameLoop(0);
+            }
 
-                // Spacebar shooting
-                if (key === ' ' && animationFrameId && player) {
-                    player.shoot(player.x, player.y - 100); 
-                }
+            // Event listener for the start/restart button
+            startButton.addEventListener('click', () => {
+                startGame();
             });
 
-            function getMousePos(evt) {
-                const rect = canvas.getBoundingClientRect();
-                return {
-                    x: evt.clientX - rect.left,
-                    y: evt.clientY - rect.top
-                };
-            }
-            
-            function handleShoot(e) {
-                if (animationFrameId && player) {
-                    const pos = e.touches ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : { x: e.clientX, y: e.clientY };
-                    const gamePos = getMousePos(pos);
-                    player.shoot(gamePos.x, gamePos.y);
-                }
-            }
-
-            window.addEventListener('click', handleShoot);
-            window.addEventListener('touchstart', (e) => {
-                e.preventDefault(); // Prevent click event from firing too
-                handleShoot(e);
-            }, { passive: false });
-
-            // Ensure instructions are visible on first load
-            function initialScreen() {
-                overlayTitle.innerText = '太空射擊 Pro';
-                finalScoreDisplay.innerText = '';
-                startButton.innerText = '開始遊戲';
-                instructions.style.display = 'block';
-                uiOverlay.classList.remove('hidden');
-            }
-            
-            initialScreen();
-
+            // Initial setup to show the start screen
+            overlayTitle.innerText = '射擊遊戲';
+            finalScoreDisplay.innerText = '';
+            startButton.innerText = '開始遊戲';
+            uiOverlay.style.display = 'flex';
         });
     </script>
 </body>
 </html>
-
